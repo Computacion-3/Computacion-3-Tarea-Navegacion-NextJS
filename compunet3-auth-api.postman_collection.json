@@ -1,11 +1,43 @@
-﻿{
+{
 	"info": {
 		"_postman_id": "b1a23c45-6789-4def-0123-abcdef456789",
-		"name": "Compunet3 - Auth API",
-		"description": "Coleccion de Postman para probar los endpoints de Role y User.",
+		"name": "Compunet3 - Fitness & Auth API",
+		"description": "Coleccion de Postman para probar los endpoints de Role, User, Exercise y Routine.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin_postman@example.com\",\n  \"password\": \"admin12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "Roles",
 			"item": [
@@ -149,6 +181,16 @@
 				{
 					"name": "Find All Users",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -227,12 +269,339 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Exercises",
+			"item": [
+				{
+					"name": "Create Exercise",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Sentadillas\",\n  \"description\": \"Sentadilla libre con barra\",\n  \"type\": \"Fuerza\",\n  \"estimatedCalories\": 150,\n  \"estimatedDurationMin\": 20,\n  \"icon\": \"squat.png\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/exercise",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercise"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All Exercises",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/exercise",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercise"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find One Exercise",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/exercise/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercise",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Exercise",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Sentadilla profunda con barra olímpica\",\n  \"estimatedCalories\": 180\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/exercise/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercise",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Exercise",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/exercise/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercise",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Routines",
+			"item": [
+				{
+					"name": "Create Routine",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Rutina Pierna y Fuerza\",\n  \"description\": \"Sesión de alta intensidad\",\n  \"exercises\": [\n    {\n      \"exerciseId\": 1,\n      \"orderIndex\": 0,\n      \"targetSets\": 4,\n      \"targetReps\": 12,\n      \"targetWeightKg\": 80,\n      \"targetDurationMin\": 20\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/routine",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All Routines",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routine",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find One Routine",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routine/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Routine",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Rutina Pierna y Fuerza - Actualizada\",\n  \"description\": \"Sesión con progresión de peso\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/routine/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Routine",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routine/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
 		{
 			"key": "base_url",
 			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
 			"type": "string"
 		}
 	]
