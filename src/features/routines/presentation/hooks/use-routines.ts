@@ -11,27 +11,58 @@ export function useRoutines() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // Consulta de rutinas: invoca el caso de uso y mapea Domain -> ViewModel
-    const loadRoutines = useCallback(async () => {
+    // Carga inicial al montar: el método se define dentro del useEffect
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadInitialRoutines = async () => {
+            try {
+                const domainEntities = await routineContainer.getRoutines.execute();
+                if (isMounted) {
+                    // Aduana Presentation: Dominio -> ViewModel
+                    const viewModels = domainEntities.map((entity) =>
+                        RoutineViewModelMapper.toViewModel(entity)
+                    );
+                    setRoutines(viewModels);
+                }
+            } catch (err: unknown) {
+                if (isMounted) {
+                    const message =
+                        err instanceof Error ? err.message : 'Error desconocido al cargar rutinas';
+                    setErrorMessage(message);
+                }
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        loadInitialRoutines();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    // Recarga manual (disparada por el usuario)
+    const reload = useCallback(async () => {
         try {
             setIsLoading(true);
             setErrorMessage(null);
             const domainEntities = await routineContainer.getRoutines.execute();
-
-            // Aduana Presentation: Dominio -> ViewModel
-            const viewModels = domainEntities.map((entity) => RoutineViewModelMapper.toViewModel(entity));
+            const viewModels = domainEntities.map((entity) =>
+                RoutineViewModelMapper.toViewModel(entity)
+            );
             setRoutines(viewModels);
         } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : 'Error desconocido al cargar rutinas';
+            const message =
+                err instanceof Error ? err.message : 'Error desconocido al recargar rutinas';
             setErrorMessage(message);
         } finally {
             setIsLoading(false);
         }
     }, []);
-
-    useEffect(() => {
-        loadRoutines();
-    }, [loadRoutines]);
 
     // Creación de rutina: caso de uso + actualización del estado con ViewModel
     const createRoutine = async (params: CreateRoutineParams): Promise<boolean> => {
@@ -57,7 +88,7 @@ export function useRoutines() {
         routines,
         isLoading,
         errorMessage,
-        reload: loadRoutines,
+        reload,
         createRoutine,
     };
 }
