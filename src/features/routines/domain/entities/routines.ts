@@ -17,7 +17,7 @@ export class Routine {
     }
 
     validate(props: RoutineProps) {
-        if (props.name.length < 10) { // @Column({length: 10})
+        if (props.name.length < 4) { // @Column({length: 10})
             throw new Error("Name should have a length greather than 10")
         }
     }

@@ -6,6 +6,7 @@ export class GetRoutineUseCase {
 
     async execute(): Promise<Routine[]> {
         // Respectivas reglas de negocio que hagan parte del proceso de crear una rutina
+        console.log("Dentro del use case")
         return await this.repository.getAll();
     }
 }
