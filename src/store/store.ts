@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { routinesReducer } from '@/src/features/routines/presentation/store/routines.slice';
 
 /**
  * Fábrica para crear una nueva instancia del Store de Redux.
@@ -11,7 +12,7 @@ import { configureStore } from '@reduxjs/toolkit';
 export const makeStore = () => {
     return configureStore({
         reducer: {
-            // Aquí conectaremos nuestros reducers en las siguientes fases
+            routines: routinesReducer,
         },
     });
 };
