@@ -1,92 +1,49 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '@/src/store/hooks';
+import { fetchRoutines, createRoutineMutation } from '../store/routines.slice';
 import { CreateRoutineParams } from '../../domain/repositories/routine.repository';
-import { routineContainer } from '../../di/routine.container';
-import { RoutineItemViewModel, RoutineViewModelMapper } from '../viewmodels/routine.viewmodel';
 
+/**
+ * Hook fachada (Presentation Layer).
+ * 
+ * Actúa como adaptador entre los componentes de React y el Store de Redux:
+ * 1. Oculta los detalles de Redux a los componentes visuales (RoutineForm, RoutineCard).
+ * 2. Mantiene exactamente la misma API pública que tenía con useState.
+ */
 export function useRoutines() {
-    // El estado ahora almacena ViewModels preparados para la UI
-    const [routines, setRoutines] = useState<RoutineItemViewModel[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const dispatch = useAppDispatch();
 
-    // Carga inicial al montar: el método se define dentro del useEffect
+    // 1. Lectura del estado global gestionado por Redux
+    const routines = useAppSelector((state) => state.routines.items);
+    const isLoading = useAppSelector((state) => state.routines.isLoading);
+    const isMutating = useAppSelector((state) => state.routines.isMutating);
+    const errorMessage = useAppSelector((state) => state.routines.errorMessage);
+
+    // 2. Carga inicial: si el store aún no tiene datos y no está cargando, solicitamos las rutinas
     useEffect(() => {
-        let isMounted = true;
-
-        const loadInitialRoutines = async () => {
-            try {
-                const domainEntities = await routineContainer.getRoutines.execute();
-                if (isMounted) {
-                    // Aduana Presentation: Dominio -> ViewModel
-                    const viewModels = domainEntities.map((entity) =>
-                        RoutineViewModelMapper.toViewModel(entity)
-                    );
-                    setRoutines(viewModels);
-                }
-            } catch (err: unknown) {
-                if (isMounted) {
-                    const message =
-                        err instanceof Error ? err.message : 'Error desconocido al cargar rutinas';
-                    setErrorMessage(message);
-                }
-            } finally {
-                if (isMounted) {
-                    setIsLoading(false);
-                }
-            }
-        };
-
-        loadInitialRoutines();
-
-        return () => {
-            isMounted = false;
-        };
-    }, []);
-
-    // Recarga manual (disparada por el usuario)
-    const reload = useCallback(async () => {
-        try {
-            setIsLoading(true);
-            setErrorMessage(null);
-            const domainEntities = await routineContainer.getRoutines.execute();
-            const viewModels = domainEntities.map((entity) =>
-                RoutineViewModelMapper.toViewModel(entity)
-            );
-            setRoutines(viewModels);
-        } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : 'Error desconocido al recargar rutinas';
-            setErrorMessage(message);
-        } finally {
-            setIsLoading(false);
+        if (routines.length === 0 && !isLoading) {
+            dispatch(fetchRoutines());
         }
-    }, []);
+    }, [dispatch, routines.length, isLoading]);
 
-    // Creación de rutina: caso de uso + actualización del estado con ViewModel
+    // 3. Mutación de creación: delega al thunk asíncrono
     const createRoutine = async (params: CreateRoutineParams): Promise<boolean> => {
-        try {
-            setIsLoading(true);
-            setErrorMessage(null);
-            const newEntity = await routineContainer.createRoutine.execute(params);
-
-            // Mapeo inmediato de la nueva entidad a ViewModel
-            const newViewModel = RoutineViewModelMapper.toViewModel(newEntity);
-            setRoutines((prev) => [newViewModel, ...prev]);
-            return true;
-        } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : 'No se pudo guardar la rutina';
-            setErrorMessage(message);
-            return false;
-        } finally {
-            setIsLoading(false);
-        }
+        const resultAction = await dispatch(createRoutineMutation(params));
+        // Devuelve true si la acción culminó en fulfilled (éxito), o false si fue rejected (error)
+        return createRoutineMutation.fulfilled.match(resultAction);
     };
+
+    // 4. Recarga manual
+    const reload = useCallback(() => {
+        dispatch(fetchRoutines());
+    }, [dispatch]);
 
     return {
         routines,
-        isLoading,
+        // La UI considera que está cargando si estamos en consulta inicial o en proceso de guardado
+        isLoading: isLoading || isMutating,
         errorMessage,
         reload,
         createRoutine,
