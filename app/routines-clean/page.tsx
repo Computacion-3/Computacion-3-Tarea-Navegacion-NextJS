@@ -5,7 +5,7 @@ import { RoutineCard } from '@/src/features/routines/presentation/components/Rou
 import { RoutineForm } from '@/src/features/routines/presentation/components/RoutineForm';
 
 export default function RoutinesCleanPage() {
-    const { routines, isLoading, errorMessage, createRoutine } = useRoutines();
+    const { routines, isLoading, isMutating, errorMessage, createRoutine } = useRoutines();
 
     return (
         <main className="p-6 max-w-4xl mx-auto space-y-6">
@@ -18,7 +18,7 @@ export default function RoutinesCleanPage() {
 
             {/* Formulario */}
             <section>
-                <RoutineForm onSubmit={createRoutine} isLoading={isLoading} />
+                <RoutineForm onSubmit={createRoutine} isLoading={isLoading || isMutating} />
             </section>
 
             {/* Error */}
