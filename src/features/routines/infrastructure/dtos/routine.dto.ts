@@ -5,9 +5,13 @@ export interface RoutineResponseDto {
     created_at: string; // ISO 8601 string
 }
 
-
 export interface CreateRoutineDto {
     name: string;
     description?: string;
     userId?: number;
+}
+
+export interface UpdateRoutineDto {
+    name: string;
+    description?: string;
 }

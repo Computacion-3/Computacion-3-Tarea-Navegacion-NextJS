@@ -1,27 +1,66 @@
 'use client';
 
+import { useState } from 'react';
 import { useRoutines } from '@/src/features/routines/presentation/hooks/use-routines';
 import { RoutineCard } from '@/src/features/routines/presentation/components/RoutineCard';
 import { RoutineForm } from '@/src/features/routines/presentation/components/RoutineForm';
+import { EditRoutineModal } from '@/src/features/routines/presentation/components/EditRoutineModal';
+import { RoutineItemViewModel } from '@/src/features/routines/presentation/viewmodels/routine.viewmodel';
+import { UpdateRoutineParams } from '@/src/features/routines/domain/repositories/routine.repository';
 
 export default function RoutinesCleanPage() {
-    const { routines, isLoading, isMutating, errorMessage, createRoutine } = useRoutines();
+    const {
+        routines,
+        isLoading,
+        isMutating,
+        errorMessage,
+        createRoutine,
+        updateRoutine,
+        deleteRoutine,
+    } = useRoutines();
+
+    const [editingRoutine, setEditingRoutine] = useState<RoutineItemViewModel | null>(null);
+
+    const handleOpenEdit = (routine: RoutineItemViewModel) => {
+        setEditingRoutine(routine);
+    };
+
+    const handleCloseEdit = () => {
+        setEditingRoutine(null);
+    };
+
+    const handleSaveEdit = async (params: UpdateRoutineParams): Promise<boolean> => {
+        const success = await updateRoutine(params);
+        if (success) {
+            setEditingRoutine(null);
+        }
+        return success;
+    };
+
+    const handleDelete = async (id: number) => {
+        const confirmed = window.confirm(
+            '¿Estás seguro de que deseas eliminar esta rutina? Esta acción no se puede deshacer.'
+        );
+        if (!confirmed) return;
+
+        await deleteRoutine(id);
+    };
 
     return (
         <main className="p-6 max-w-4xl mx-auto space-y-6">
             <header className="border-b border-base-200 pb-4">
                 <h1 className="text-3xl font-bold">Gestión de Rutinas</h1>
                 <p className="text-sm opacity-70 mt-1">
-                    Crea y administra tus rutinas de entrenamiento.
+                    Crea, edita y administra tus rutinas de entrenamiento con Clean Architecture.
                 </p>
             </header>
 
-            {/* Formulario */}
+            {/* Formulario de Creación */}
             <section>
                 <RoutineForm onSubmit={createRoutine} isLoading={isLoading || isMutating} />
             </section>
 
-            {/* Error */}
+            {/* Error global */}
             {errorMessage && (
                 <div role="alert" className="alert alert-error text-sm">
                     <span>{errorMessage}</span>
@@ -49,11 +88,26 @@ export default function RoutinesCleanPage() {
                 ) : (
                     <div className="grid grid-cols-1 gap-3">
                         {routines.map((routine) => (
-                            <RoutineCard key={routine.id} routine={routine} />
+                            <RoutineCard
+                                key={routine.id}
+                                routine={routine}
+                                onEdit={handleOpenEdit}
+                                onDelete={handleDelete}
+                                disabled={isMutating}
+                            />
                         ))}
                     </div>
                 )}
             </section>
+
+            {/* Modal de Edición */}
+            <EditRoutineModal
+                routine={editingRoutine}
+                isOpen={Boolean(editingRoutine)}
+                onClose={handleCloseEdit}
+                onSave={handleSaveEdit}
+                isLoading={isMutating}
+            />
         </main>
     );
 }

@@ -1,6 +1,6 @@
 import { Routine } from '../../domain/entities/routine';
-import { CreateRoutineParams } from '../../domain/repositories/routine.repository';
-import { RoutineResponseDto, CreateRoutineDto } from '../dtos/routine.dto';
+import { CreateRoutineParams, UpdateRoutineParams } from '../../domain/repositories/routine.repository';
+import { RoutineResponseDto, CreateRoutineDto, UpdateRoutineDto } from '../dtos/routine.dto';
 
 export class RoutineMapper {
     static toDomain(dto: RoutineResponseDto): Routine {
@@ -17,6 +17,13 @@ export class RoutineMapper {
             name: params.name.trim(),
             description: params.description?.trim(),
             userId: 1,
+        };
+    }
+
+    static toUpdateDto(params: UpdateRoutineParams): UpdateRoutineDto {
+        return {
+            name: params.name.trim(),
+            description: params.description?.trim(),
         };
     }
 }

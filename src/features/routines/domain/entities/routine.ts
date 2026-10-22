@@ -36,4 +36,13 @@ export class Routine {
     hasDescription(): boolean {
         return Boolean(this.description && this.description.trim().length > 0);
     }
+
+    update(name: string, description?: string): Routine {
+        return new Routine({
+            id: this.id,
+            name,
+            description,
+            createdAt: this.createdAt,
+        });
+    }
 }

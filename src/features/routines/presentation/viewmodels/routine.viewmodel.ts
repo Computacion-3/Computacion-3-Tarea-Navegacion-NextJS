@@ -4,6 +4,7 @@ export interface RoutineItemViewModel {
     readonly id: number;
     readonly title: string;
     readonly descriptionText: string;
+    readonly rawDescription?: string;
     readonly formattedDate: string;
     readonly isRecent: boolean;
     readonly badgeText: string;
@@ -21,6 +22,7 @@ export class RoutineViewModelMapper {
             descriptionText: entity.hasDescription()
                 ? entity.description!
                 : 'Sin descripción asignada.',
+            rawDescription: entity.description,
             formattedDate: entity.createdAt.toLocaleDateString('es-CO', {
                 year: 'numeric',
                 month: 'short',

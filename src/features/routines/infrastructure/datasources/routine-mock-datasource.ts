@@ -1,5 +1,5 @@
 import { RoutineDatasource } from './routine-datasource.interface';
-import { RoutineResponseDto, CreateRoutineDto } from '../dtos/routine.dto';
+import { RoutineResponseDto, CreateRoutineDto, UpdateRoutineDto } from '../dtos/routine.dto';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -51,5 +51,33 @@ export class RoutineMockDatasource implements RoutineDatasource {
 
         this.routines.push(newRoutine);
         return { ...newRoutine };
+    }
+
+    async updateRoutine(id: number, dto: UpdateRoutineDto): Promise<RoutineResponseDto> {
+        await delay(600);
+        const index = this.routines.findIndex((r) => r.id === id);
+        if (index === -1) {
+            throw new Error(`Rutina con id ${id} no encontrada.`);
+        }
+
+        const existing = this.routines[index];
+        const updated: RoutineResponseDto = {
+            ...existing,
+            name: dto.name,
+            description: dto.description,
+        };
+
+        this.routines[index] = updated;
+        return { ...updated };
+    }
+
+    async deleteRoutine(id: number): Promise<void> {
+        await delay(600);
+        const index = this.routines.findIndex((r) => r.id === id);
+        if (index === -1) {
+            throw new Error(`Rutina con id ${id} no encontrada.`);
+        }
+
+        this.routines.splice(index, 1);
     }
 }
