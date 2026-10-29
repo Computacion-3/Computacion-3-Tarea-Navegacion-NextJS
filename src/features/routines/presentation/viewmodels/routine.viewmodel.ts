@@ -5,16 +5,11 @@ export interface RoutineItemViewModel {
     readonly title: string;
     readonly descriptionText: string;
     readonly formattedDate: string;
-    readonly isRecent: boolean;
-    readonly badgeText: string;
+    readonly categoryId: number;
 }
 
 export class RoutineViewModelMapper {
     static toViewModel(entity: Routine): RoutineItemViewModel {
-        // Regla de presentación: una rutina es reciente si tiene menos de 2 días de creada
-        const twoDaysInMs = 1000 * 60 * 60 * 24 * 2;
-        const isRecent = Date.now() - entity.createdAt.getTime() <= twoDaysInMs;
-
         return {
             id: entity.id,
             title: entity.name,
@@ -26,8 +21,7 @@ export class RoutineViewModelMapper {
                 month: 'short',
                 day: 'numeric',
             }),
-            isRecent,
-            badgeText: isRecent ? 'Reciente' : `ID #${entity.id}`,
+            categoryId: entity.categoryId,
         };
     }
 }

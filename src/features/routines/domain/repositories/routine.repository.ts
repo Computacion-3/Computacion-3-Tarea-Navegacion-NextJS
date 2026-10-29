@@ -3,6 +3,7 @@ import { Routine } from '../entities/routine';
 export interface CreateRoutineParams {
     name: string;
     description?: string;
+    categoryId: number;
 }
 
 export interface RoutineRepository {

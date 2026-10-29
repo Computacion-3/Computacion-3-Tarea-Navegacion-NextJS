@@ -1,30 +1,29 @@
+import { CategoryBadge } from '@/src/features/categories/presentation/components/CategoryBadge';
+import { CategoryItemViewModel } from '@/src/features/categories/presentation/viewmodels/category.viewmodel';
 import { RoutineItemViewModel } from '../viewmodels/routine.viewmodel';
 
 interface RoutineCardProps {
   routine: RoutineItemViewModel;
+  // undefined si la categoría fue eliminada o aún no ha cargado
+  category?: CategoryItemViewModel;
 }
 
-export function RoutineCard({ routine }: RoutineCardProps) {
+export function RoutineCard({ routine, category }: RoutineCardProps) {
   return (
-    <div className="card bg-base-100 shadow-sm border border-base-200">
-      <div className="card-body p-4">
-        <div className="flex justify-between items-start gap-4">
-          <div>
-            <h3 className="card-title text-base">{routine.title}</h3>
-            <p className="text-sm opacity-70 mt-1">{routine.descriptionText}</p>
-          </div>
-          <span
-            className={`badge ${
-              routine.isRecent ? 'badge-accent' : 'badge-primary badge-outline'
-            }`}
-          >
-            {routine.badgeText}
-          </span>
-        </div>
+    <div className="flex h-full flex-col gap-3 rounded-xl bg-white p-5 shadow-sm">
+      <div>
+        <h3 className="text-base font-semibold text-neutral-900">{routine.title}</h3>
+        <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+          {routine.descriptionText}
+        </p>
+      </div>
 
-        <div className="card-actions justify-end mt-2 pt-2 border-t border-base-200 text-xs opacity-50">
-          <span>Creado el {routine.formattedDate}</span>
-        </div>
+      <div className="mt-auto">
+        {category ? (
+          <CategoryBadge name={category.name} color={category.color} />
+        ) : (
+          <CategoryBadge name="Sin categoría" color="#737373" />
+        )}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ export class RoutineMapper {
             id: dto.id,
             name: dto.name,
             description: dto.description ?? undefined,
+            categoryId: dto.category_id,
             createdAt: new Date(dto.created_at),
         });
     }
@@ -16,6 +17,7 @@ export class RoutineMapper {
         return {
             name: params.name.trim(),
             description: params.description?.trim(),
+            categoryId: params.categoryId,
             userId: 1,
         };
     }

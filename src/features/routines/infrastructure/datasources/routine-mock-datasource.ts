@@ -3,25 +3,31 @@ import { RoutineResponseDto, CreateRoutineDto } from '../dtos/routine.dto';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const DAY_MS = 1000 * 60 * 60 * 24;
+
+// category_id coincide con los ids del datasource mock de `categories`: 1 Fuerza, 2 Hipertrofia, 3 Resistencia
 export class RoutineMockDatasource implements RoutineDatasource {
     private routines: RoutineResponseDto[] = [
         {
             id: 1,
-            name: 'Torso Fuerza e Hipertrofia',
-            description: 'Rutina de tren superior enfocada en empujes y tracciones pesadas.',
-            created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(), // Hace 3 días
+            name: 'Cardio suave',
+            description: 'Bicicleta y caminata inclinada',
+            category_id: 3,
+            created_at: new Date(Date.now() - DAY_MS * 3).toISOString(), // Hace 3 días
         },
         {
             id: 2,
-            name: 'Pierna Completa e Isquios',
-            description: 'Rutina de tren inferior con énfasis en sentadilla libre y peso muerto.',
-            created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // Hace 2 días
+            name: 'Torso y brazos',
+            description: 'Press banca, remo y dominadas',
+            category_id: 2,
+            created_at: new Date(Date.now() - DAY_MS * 2).toISOString(), // Hace 2 días
         },
         {
             id: 3,
-            name: 'Full Body Funcional',
-            description: 'Circuito metabólico de cuerpo completo para resistencia y quema calórica.',
-            created_at: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // Hace 12 horas
+            name: 'Pierna pesada',
+            description: 'Sentadilla, peso muerto y zancadas',
+            category_id: 1,
+            created_at: new Date(Date.now() - DAY_MS).toISOString(), // Hace 1 día
         },
     ];
 
@@ -46,6 +52,7 @@ export class RoutineMockDatasource implements RoutineDatasource {
             id: nextId,
             name: dto.name,
             description: dto.description,
+            category_id: dto.categoryId,
             created_at: new Date().toISOString(),
         };
 

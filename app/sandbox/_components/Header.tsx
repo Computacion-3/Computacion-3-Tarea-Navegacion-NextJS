@@ -1,31 +1,27 @@
 import Link from 'next/link';
 import { Navbar } from './Navbar';
 
-
 export function Header() {
     return (
-        <header className="navbar sticky top-0 z-20 bg-base-100 px-2 shadow-sm md:px-6">
-            <div className="navbar-start gap-1">
-                <div className="md:hidden">
-                    <Navbar variant="mobile" />
-                </div>
-                <Link href="/routines" className="btn btn-ghost px-2 text-lg font-bold md:text-xl">
+        <header className="sticky top-0 z-20 bg-white shadow-sm">
+            <div className="flex items-center justify-between px-4 py-3 md:px-6">
+                <Link href="/routines" className="text-xl font-bold text-neutral-900">
                     GymRoutines
                 </Link>
-            </div>
 
-            <nav className="navbar-center hidden md:flex" aria-label="Principal">
-                <Navbar variant="desktop" />
-            </nav>
-
-            <div className="navbar-end">
                 <div className="dropdown dropdown-end">
-                    <div tabIndex={0} role="button" className="avatar avatar-placeholder btn btn-ghost btn-circle" aria-label="Menú de usuario">
-                        <div className="w-10 rounded-full bg-neutral text-neutral-content">
-                            <span>U</span>
-                        </div>
+                    <div
+                        tabIndex={0}
+                        role="button"
+                        aria-label="Menú de usuario"
+                        className="flex size-10 cursor-pointer items-center justify-center rounded-full bg-[#4330d8] text-sm font-bold text-white"
+                    >
+                        AP
                     </div>
-                    <ul tabIndex={0} className="menu dropdown-content z-10 mt-3 w-48 rounded-box bg-base-100 p-2 shadow">
+                    <ul
+                        tabIndex={0}
+                        className="menu dropdown-content z-10 mt-3 w-48 rounded-box bg-base-100 p-2 shadow"
+                    >
                         <li className="menu-title">Usuario</li>
                         <li>
                             <Link href="/login">Cerrar sesión</Link>
@@ -33,6 +29,10 @@ export function Header() {
                     </ul>
                 </div>
             </div>
+
+            <nav className="border-t border-neutral-200 px-4 py-3 md:px-4" aria-label="Principal">
+                <Navbar />
+            </nav>
         </header>
     );
 }

@@ -2,6 +2,7 @@ export interface RoutineProps {
     readonly id: number;
     readonly name: string;
     readonly description?: string;
+    readonly categoryId: number; // Referencia al feature `categories` (solo el id, sin acoplar dominios)
     readonly createdAt: Date;
 }
 
@@ -9,6 +10,7 @@ export class Routine {
     readonly id: number;
     readonly name: string;
     readonly description?: string;
+    readonly categoryId: number;
     readonly createdAt: Date;
 
     constructor(props: RoutineProps) {
@@ -16,6 +18,7 @@ export class Routine {
         this.id = props.id;
         this.name = props.name;
         this.description = props.description;
+        this.categoryId = props.categoryId;
         this.createdAt = props.createdAt;
     }
 
@@ -30,6 +33,10 @@ export class Routine {
 
         if (props.description !== undefined && props.description.trim().length > 0 && props.description.trim().length < 10) {
             throw new Error('La descripción debe tener al menos 10 caracteres explicativos si se proporciona.');
+        }
+
+        if (!Number.isInteger(props.categoryId) || props.categoryId <= 0) {
+            throw new Error('La rutina debe pertenecer a una categoría válida.');
         }
     }
 

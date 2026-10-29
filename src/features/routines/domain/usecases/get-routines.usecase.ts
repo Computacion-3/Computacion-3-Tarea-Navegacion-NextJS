@@ -6,6 +6,7 @@ export class GetRoutinesUseCase {
 
     async execute(): Promise<Routine[]> {
         const routines = await this.repository.getAll();
-        return routines.sort((a, b) => a.name.localeCompare(b.name));
+        // Más recientes primero (coherente con el store, que inserta las nuevas al inicio)
+        return [...routines].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     }
 }
